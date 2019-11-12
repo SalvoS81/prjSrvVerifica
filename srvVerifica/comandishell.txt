@@ -1,0 +1,32 @@
+
+from modelVerifica.models import Operazione_di_verifica
+from modelVerifica.serializers import Operazione_di_verifica_Serializer
+from rest_framework.renderers import JSONRenderer
+from rest_framework.parsers import JSONParser
+operazione = Operazione_di_verifica(matricola_verificatore='64945', risposte='Queste sono delle risposte.', vettura=3212, linea='BRT', foglio=1)
+operazione.save()
+
+serializer = Operazione_di_verifica_Serializer(operazione)
+serializer.data
+
+content = JSONRenderer().render(serializer.data)
+content
+
+import io 
+stream = io.BytesIO(content)
+data = JSONParser().parse(stream)
+
+serializer = Operazione_di_verifica_Serializer(data=data)
+serializer.is_valid()
+serializer.validated_data
+serializer.save()
+
+serializer = Operazione_di_verifica_Serializer(Operazione_di_verifica.objects.all(), many=True)
+serializer.data
+
+from modelVerifica.serializers import Operazione_di_verifica_Serializer
+serializer = Operazione_di_verifica_Serializer()
+print(repr(serializer))
+
+
+http -a 33123:pswcatania POST http://127.0.0.1:8000/operazioni_di_verifica/ matricola_verificatore=33123 risposte='nessuna risposta' vettura=3312 linea=101 foglio=1
